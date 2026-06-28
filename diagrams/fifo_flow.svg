@@ -1,0 +1,75 @@
+<svg viewBox="0 0 960 560" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <rect width="960" height="560" fill="#ffffff"/>
+
+  <defs>
+    <marker id="arrowA" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#94816f"/>
+    </marker>
+    <marker id="arrowB" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#5b7c8d"/>
+    </marker>
+  </defs>
+
+  <text x="240" y="36" text-anchor="middle" font-size="15" font-weight="bold" fill="#5c4a3a">Antes (con el bug)</text>
+  <text x="720" y="36" text-anchor="middle" font-size="15" font-weight="bold" fill="#2f4b58">Despues (corregido)</text>
+
+  <line x1="480" y1="20" x2="480" y2="500" stroke="#e2e2e2" stroke-width="1"/>
+
+  <!-- Columna izquierda -->
+  <g font-size="12.5" fill="#2c2c2c">
+    <rect x="100" y="65" width="280" height="48" rx="5" fill="#f7f3ef" stroke="#94816f" stroke-width="1.5"/>
+    <text x="240" y="93" text-anchor="middle">Usuario hace clic en "Agregar perfume"</text>
+
+    <line x1="240" y1="113" x2="240" y2="148" stroke="#94816f" stroke-width="1.5" marker-end="url(#arrowA)"/>
+
+    <rect x="100" y="148" width="280" height="56" rx="5" fill="#f7f3ef" stroke="#94816f" stroke-width="1.5"/>
+    <text x="240" y="172" text-anchor="middle" font-weight="bold">calcular_costo_venta()</text>
+    <text x="240" y="190" text-anchor="middle" font-size="11">descuenta unidades en lote_inventario</text>
+
+    <line x1="240" y1="204" x2="240" y2="239" stroke="#94816f" stroke-width="1.5" marker-end="url(#arrowA)"/>
+
+    <rect x="100" y="239" width="280" height="52" rx="5" fill="#ffffff" stroke="#94816f" stroke-width="1.5" stroke-dasharray="5,4"/>
+    <text x="240" y="262" text-anchor="middle">Usuario cierra la ventana</text>
+    <text x="240" y="280" text-anchor="middle" font-size="11">sin hacer clic en "Guardar venta"</text>
+
+    <line x1="240" y1="291" x2="240" y2="326" stroke="#94816f" stroke-width="1.5" marker-end="url(#arrowA)"/>
+
+    <rect x="100" y="326" width="280" height="60" rx="5" fill="#efe6dd" stroke="#5c4a3a" stroke-width="1.5"/>
+    <text x="240" y="350" text-anchor="middle" font-weight="bold" fill="#5c4a3a">Resultado</text>
+    <text x="240" y="368" text-anchor="middle" font-size="11" fill="#5c4a3a">inventario descontado, pero no existe</text>
+    <text x="240" y="382" text-anchor="middle" font-size="11" fill="#5c4a3a">ninguna venta que lo explique</text>
+  </g>
+
+  <!-- Columna derecha -->
+  <g font-size="12.5" fill="#2c2c2c">
+    <rect x="580" y="65" width="280" height="48" rx="5" fill="#eef3f5" stroke="#5b7c8d" stroke-width="1.5"/>
+    <text x="720" y="93" text-anchor="middle">Usuario hace clic en "Agregar perfume"</text>
+
+    <line x1="720" y1="113" x2="720" y2="148" stroke="#5b7c8d" stroke-width="1.5" marker-end="url(#arrowB)"/>
+
+    <rect x="580" y="148" width="280" height="56" rx="5" fill="#eef3f5" stroke="#5b7c8d" stroke-width="1.5"/>
+    <text x="720" y="172" text-anchor="middle" font-weight="bold">calcular_costo_estimado()</text>
+    <text x="720" y="190" text-anchor="middle" font-size="11">solo lee los lotes, no modifica nada</text>
+
+    <line x1="720" y1="204" x2="720" y2="239" stroke="#5b7c8d" stroke-width="1.5" marker-end="url(#arrowB)"/>
+
+    <rect x="580" y="239" width="280" height="52" rx="5" fill="#ffffff" stroke="#5b7c8d" stroke-width="1.5"/>
+    <text x="720" y="262" text-anchor="middle">Usuario hace clic en</text>
+    <text x="720" y="280" text-anchor="middle" font-weight="bold">"Guardar venta"</text>
+
+    <line x1="720" y1="291" x2="720" y2="326" stroke="#5b7c8d" stroke-width="1.5" marker-end="url(#arrowB)"/>
+
+    <rect x="580" y="326" width="280" height="56" rx="5" fill="#eef3f5" stroke="#5b7c8d" stroke-width="1.5"/>
+    <text x="720" y="348" text-anchor="middle" font-weight="bold">aplicar_descuento_lotes()</text>
+    <text x="720" y="365" text-anchor="middle" font-size="11">descuenta de verdad, junto con el</text>
+    <text x="720" y="379" text-anchor="middle" font-size="11">INSERT en la tabla ventas</text>
+
+    <line x1="720" y1="382" x2="720" y2="417" stroke="#5b7c8d" stroke-width="1.5" marker-end="url(#arrowB)"/>
+
+    <rect x="580" y="417" width="280" height="48" rx="5" fill="#dfe9ec" stroke="#2f4b58" stroke-width="1.5"/>
+    <text x="720" y="439" text-anchor="middle" font-weight="bold" fill="#2f4b58">Resultado</text>
+    <text x="720" y="455" text-anchor="middle" font-size="11" fill="#2f4b58">inventario y venta siempre consistentes</text>
+  </g>
+
+  <text x="720" y="500" text-anchor="middle" font-size="11.5" fill="#555">Si se elimina la venta, revertir_descuento_lotes() devuelve las unidades a sus lotes originales.</text>
+</svg>

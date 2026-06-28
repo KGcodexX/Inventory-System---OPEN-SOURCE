@@ -1,6 +1,28 @@
 # Sistema de Gestión para Perfumería
 
+![Tests](https://github.com/KGcodexX/Inventory-System---OPEN-SOURCE/actions/workflows/tests.yml/badge.svg)
+![Licencia: MIT](https://img.shields.io/badge/licencia-MIT-blue.svg)
+![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)
+
 Esta es una aplicación de escritorio diseñada a la medida para centralizar y simplificar el día a día de un negocio de venta de perfumes. Lejos de ser un proyecto puramente teórico, la aplicación opera actualmente en un entorno real, unificando el control de inventario, ventas, clientes, proveedores y finanzas en una sola plataforma rápida e intuitiva.
+
+## Contenido
+
+* [¿Por qué nació este proyecto?](#por-qué-nació-este-proyecto)
+* [Funcionalidades Clave](#funcionalidades-clave)
+* [Arquitectura del Proyecto](#arquitectura-del-proyecto)
+* [Diagramas](#diagramas)
+* [Retos Técnicos y Soluciones](#retos-técnicos-y-soluciones)
+* [Pruebas Automatizadas](#pruebas-automatizadas)
+* [Tecnologías Utilizadas](#tecnologías-utilizadas)
+* [Despliegue y Ejecución](#despliegue-y-ejecución)
+* [Configuración de Google Sheets](#configuración-de-google-sheets-opcional)
+* [Roadmap](#roadmap)
+* [Preguntas Frecuentes](#preguntas-frecuentes)
+* [Créditos](#créditos)
+* [Licencia](#licencia)
+
+---
 
 ## ¿Por qué nació este proyecto?
 
@@ -106,6 +128,22 @@ El código está estructurado bajo un enfoque modular, donde cada componente tie
 
 ---
 
+## Diagramas
+
+**Arquitectura general** — qué módulo depende de cuál:
+
+![Arquitectura del sistema](diagrams/architecture.svg)
+
+**Modelo de datos** — tablas principales y sus relaciones:
+
+![Diagrama entidad-relación](diagrams/database_er.svg)
+
+**Flujo del bug de FIFO** — cómo era antes y cómo quedó después de la corrección (ver sección siguiente):
+
+![Flujo de costeo FIFO, antes y despues](diagrams/fifo_flow.svg)
+
+---
+
 ## Retos Técnicos y Soluciones
 
 ### El desafío del costo real con el método FIFO
@@ -136,34 +174,88 @@ Estas pruebas utilizan una base de datos SQLite en memoria (`:memory:`), aisland
 
 Para lanzar las pruebas en un entorno local:
 
+```bash
 pip install pytest
 python -m pytest tests/ -v
+```
 
-Tecnologías Utilizadas
-Lenguaje: Python 3
-Interfaz Gráfica: Tkinter / ttk
-Base de Datos: SQLite
-Integración Cloud: gspread y Google Service Account
-Reportería e Ingeniería Visual: fpdf2, matplotlib y Pillow
-Despliegue y Ejecución
+---
+
+## Tecnologías Utilizadas
+
+* **Lenguaje:** Python 3
+* **Interfaz Gráfica:** Tkinter / ttk
+* **Base de Datos:** SQLite
+* **Integración Cloud:** gspread y Google Service Account
+* **Reportería e Ingeniería Visual:** fpdf2, matplotlib y Pillow
+
+---
+
+## Despliegue y Ejecución
 
 Para iniciar el proyecto en un entorno local, asegúrate de instalar las dependencias necesarias e inicializar el archivo principal:
 
+```bash
 pip install -r requirements.txt
 python main.py
-Nota sobre la interfaz: El sistema busca un archivo llamado Image.png como pantalla de bienvenida. Si no se encuentra presente, la aplicación está diseñada para mitigar el error y continuar funcionando normalmente.
+```
 
-Nota sobre la nube: El archivo credenciales.json es un requisito exclusivo si deseas activar la sincronización con Google Sheets. Si no se incluye, el sistema ignorará el paso y trabajará de forma local de manera transparente.
+**Nota sobre la interfaz:** El sistema busca un archivo llamado `Image.png` como pantalla de bienvenida. Si no se encuentra presente, la aplicación está diseñada para mitigar el error y continuar funcionando normalmente.
 
-Configuración de Google Sheets (Opcional)
+**Nota sobre la nube:** El archivo `credenciales.json` es un requisito exclusivo si deseas activar la sincronización con Google Sheets. Si no se incluye, el sistema ignorará el paso y trabajará de forma local de manera transparente.
+
+---
+
+## Configuración de Google Sheets (Opcional)
+
 Si deseas habilitar el respaldo automático en la nube, sigue estos pasos:
 
-Crea un proyecto dentro de Google Cloud Console.
-Habilita las APIs de Google Sheets y Google Drive para dicho proyecto.
-Genera una Cuenta de Servicio (Service Account) y descarga su archivo de credenciales en formato JSON.
-Renombra el archivo descargado como credenciales.json y colócalo en el directorio raíz, al mismo nivel que main.py.
-Abre tu hoja de cálculo de Google y compártela con la dirección de correo generada en la Cuenta de Servicio, otorgándole permisos de edición.
+1. Crea un proyecto dentro de Google Cloud Console.
+2. Habilita las APIs de Google Sheets y Google Drive para dicho proyecto.
+3. Genera una Cuenta de Servicio (Service Account) y descarga su archivo de credenciales en formato JSON.
+4. Renombra el archivo descargado como `credenciales.json` y colócalo en el directorio raíz, al mismo nivel que `main.py`.
+5. Abre tu hoja de cálculo de Google y compártela con la dirección de correo generada en la Cuenta de Servicio, otorgándole permisos de edición.
+
 Si las credenciales faltan o contienen errores, el sistema está diseñado para no interrumpir la operación del negocio, continuando su ejecución en modo local.
 
-Licencia
+---
+
+## Roadmap
+
+Cosas que tengo en mente para versiones futuras, sin fecha fija todavía:
+
+* Exportar el inventario completo a un archivo Excel/CSV local, sin depender de Google Sheets.
+* Permitir registrar pedidos con varios perfumes de distintos proveedores en una sola compra.
+* Manual de usuario más detallado, con capturas paso a paso de cada pantalla.
+* Empaquetar la app como un `.exe` con PyInstaller para distribuirla sin necesidad de instalar Python.
+
+---
+
+## Preguntas Frecuentes
+
+**¿Funciona sin conexión a internet?**
+Sí. La sincronización con Google Sheets es completamente opcional; sin ella, la app funciona igual usando solo la base de datos local.
+
+**¿Qué pasa si pierdo o corrompo la base de datos?**
+El sistema genera automáticamente respaldos en la carpeta `backups/` cada vez que se inicia la app y antes de cualquier operación de borrado. Puedes restaurar el más reciente reemplazando el archivo `.db` actual por una copia de esa carpeta.
+
+**¿Cómo recupero la contraseña de administrador si la olvido?**
+Actualmente no hay un flujo de recuperación dentro de la app. La forma más directa es acceder a la base de datos SQLite (`perfumeria.db`) y eliminar manualmente la fila correspondiente en la tabla `usuarios`, lo que hace que la app te pida crear una cuenta de administrador nueva al iniciar.
+
+**¿Puedo usar esto para otro tipo de negocio, no solo perfumería?**
+El costeo FIFO, los roles de usuario, los recibos en PDF y los respaldos son genéricos y sirven para cualquier negocio que venda productos por lote. Lo que sí está hardcodeado al dominio de perfumes son los campos del inventario (marca, mililitros, etc.) en `db.py` e `inventario.py`.
+
+**¿Por qué Tkinter y no un framework más moderno?**
+Porque viene incluido con Python, no requiere que el usuario final instale nada adicional para la interfaz, y para el tamaño de esta app es más que suficiente.
+
+---
+
+## Créditos
+
+Desarrollado por [KGcodexX](https://github.com/KGcodexX). Gracias especiales a la persona que realmente usa esta app todos los días en su negocio — sin ese caso de uso real, este proyecto seguiría siendo solo un ejercicio teórico.
+
+---
+
+## Licencia
+
 Este proyecto se distribuye bajo la licencia MIT. Eres completamente libre de usarlo, modificar el código y distribuirlo tanto para fines académicos como comerciales.

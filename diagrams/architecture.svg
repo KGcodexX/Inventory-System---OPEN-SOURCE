@@ -1,0 +1,116 @@
+<svg viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <rect width="960" height="600" fill="#ffffff"/>
+
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <!-- Capa 1: entrada -->
+  <rect x="400" y="20" width="160" height="40" rx="5" fill="#f8fafc" stroke="#475569" stroke-width="1.5"/>
+  <text x="480" y="45" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e293b">main.py</text>
+
+  <line x1="480" y1="60" x2="480" y2="80" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="400" y="90" width="160" height="40" rx="5" fill="#f8fafc" stroke="#475569" stroke-width="1.5"/>
+  <text x="480" y="115" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e293b">login.py</text>
+
+  <line x1="480" y1="130" x2="480" y2="150" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="400" y="160" width="160" height="40" rx="5" fill="#eef2f6" stroke="#334155" stroke-width="2"/>
+  <text x="480" y="185" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e293b">app.py</text>
+
+  <!-- bus horizontal hacia pantallas -->
+  <line x1="480" y1="200" x2="480" y2="225" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="100" y1="225" x2="860" y2="225" stroke="#94a3b8" stroke-width="1.5"/>
+
+  <text x="480" y="248" text-anchor="middle" font-size="11" fill="#64748b">pantallas (cada una llamada desde el menu de app.py)</text>
+
+  <!-- Capa 2: pantallas, 6 cajas simetricas -->
+  <g font-size="12" font-weight="bold" fill="#1e293b">
+    <line x1="100" y1="225" x2="100" y2="260" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="40"  y="260" width="120" height="40" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+    <text x="100" y="284" text-anchor="middle">inventario.py</text>
+
+    <line x1="252" y1="225" x2="252" y2="260" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="192" y="260" width="120" height="40" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+    <text x="252" y="284" text-anchor="middle">ventas.py</text>
+
+    <line x1="404" y1="225" x2="404" y2="260" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="344" y="260" width="120" height="40" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+    <text x="404" y="284" text-anchor="middle">clientes.py</text>
+
+    <line x1="556" y1="225" x2="556" y2="260" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="496" y="260" width="120" height="40" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+    <text x="556" y="284" text-anchor="middle">economia.py</text>
+
+    <line x1="708" y1="225" x2="708" y2="260" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="643" y="260" width="130" height="40" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+    <text x="708" y="284" text-anchor="middle">proveedores.py</text>
+
+    <line x1="860" y1="225" x2="860" y2="260" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="800" y="260" width="120" height="40" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+    <text x="860" y="284" text-anchor="middle">usuarios.py</text>
+  </g>
+
+  <!-- bus horizontal hacia servicios -->
+  <line x1="480" y1="300" x2="480" y2="330" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="95"  y1="330" x2="865" y2="330" stroke="#94a3b8" stroke-width="1.5"/>
+
+  <text x="480" y="353" text-anchor="middle" font-size="11" fill="#64748b">servicios compartidos (datos, autenticacion, PDFs, sincronizacion, logs)</text>
+
+  <!-- Capa 3: servicios, 7 cajas simetricas -->
+  <g font-size="11" font-weight="bold" fill="#1e293b">
+    <line x1="95"  y1="330" x2="95"  y2="365" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="40"  y="365" width="110" height="38" rx="5" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/>
+    <text x="95"  y="388" text-anchor="middle">db.py</text>
+
+    <line x1="222" y1="330" x2="222" y2="365" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="167" y="365" width="110" height="38" rx="5" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/>
+    <text x="222" y="388" text-anchor="middle">auth.py</text>
+
+    <line x1="349" y1="330" x2="349" y2="365" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="294" y="365" width="110" height="38" rx="5" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/>
+    <text x="349" y="388" text-anchor="middle">sheets.py</text>
+
+    <line x1="476" y1="330" x2="476" y2="365" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="421" y="365" width="110" height="38" rx="5" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/>
+    <text x="476" y="388" text-anchor="middle">recibos.py</text>
+
+    <line x1="603" y1="330" x2="603" y2="365" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="548" y="365" width="110" height="38" rx="5" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/>
+    <text x="603" y="388" text-anchor="middle">reportes.py</text>
+
+    <line x1="730" y1="330" x2="730" y2="365" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="675" y="365" width="110" height="38" rx="5" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/>
+    <text x="730" y="388" text-anchor="middle">registro.py</text>
+
+    <line x1="857" y1="330" x2="857" y2="365" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="800" y="365" width="115" height="38" rx="5" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/>
+    <text x="857" y="383" text-anchor="middle">preferencias.py</text>
+  </g>
+
+  <!-- bus horizontal hacia utilidades de UI -->
+  <line x1="480" y1="403" x2="480" y2="450" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="300" y1="450" x2="660" y2="450" stroke="#94a3b8" stroke-width="1.5"/>
+
+  <text x="480" y="473" text-anchor="middle" font-size="11" fill="#64748b">utilidades de interfaz (colores, fuentes, componentes reutilizables)</text>
+
+  <!-- Capa 4: utilidades, 3 cajas simetricas -->
+  <g font-size="12" font-weight="bold" fill="#1e293b">
+    <line x1="360" y1="450" x2="360" y2="485" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="300" y="485" width="120" height="40" rx="5" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="360" y="509" text-anchor="middle">widgets.py</text>
+
+    <line x1="480" y1="450" x2="480" y2="485" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="420" y="485" width="120" height="40" rx="5" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="480" y="509" text-anchor="middle">styles.py</text>
+
+    <line x1="600" y1="450" x2="600" y2="485" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="540" y="485" width="120" height="40" rx="5" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="600" y="509" text-anchor="middle">config.py</text>
+  </g>
+
+  <text x="20" y="570" font-size="11" fill="#94a3b8">El bus horizontal indica que la capa de arriba se conecta con todas las cajas de la capa de abajo.</text>
+</svg>
