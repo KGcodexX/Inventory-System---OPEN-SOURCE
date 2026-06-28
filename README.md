@@ -1,112 +1,202 @@
-# Sistema de Perfumeria
+# Sistema de Perfumería
 
-Aplicacion de escritorio para gestionar inventario, ventas, clientes, proveedores y economia de un negocio real de venta de perfumes. Esta en uso activo por una proveedora de perfumes para llevar su operacion diaria.
+Aplicación de escritorio desarrollada para administrar el funcionamiento diario de un negocio de venta de perfumes. Actualmente se utiliza en un negocio real para gestionar inventario, ventas, clientes, proveedores y el control financiero desde una sola aplicación.
 
-## Por que existe
+## ¿Por qué se desarrolló?
 
-Antes de esta app, el control de inventario, ventas y costos se llevaba de forma manual. Eso generaba dos problemas concretos: errores al calcular cuanto costaba realmente cada perfume vendido (porque el mismo perfume se compraba en distintos lotes a distintos costos), y falta de visibilidad rapida sobre ganancias, clientes top y stock bajo.
+Antes de implementar este sistema, toda la información se llevaba de forma manual. Esto ocasionaba errores frecuentes al calcular las ganancias reales, especialmente porque un mismo perfume podía comprarse en diferentes fechas y a distintos costos. Además, obtener información como el inventario disponible, los clientes más frecuentes o las ventas del día requería revisar los registros manualmente.
 
-## Que hace
+El objetivo del proyecto fue automatizar estos procesos y facilitar la administración del negocio mediante una herramienta sencilla y rápida de utilizar.
 
-- **Inicio de sesion con roles**: cuenta de administrador (acceso total) y cuentas de vendedora (operacion diaria, sin permisos para eliminar o editar precios).
-- **Inventario**: alta, edicion y baja de perfumes, con busqueda por nombre.
-- **Ventas**: registro de ventas con metodo de pago, tipo de precio (normal, mayoreo, personalizado) y calculo de costo real por venta.
-- **Recibos en PDF**: genera un recibo descargable de cualquier venta, con perfume, marca, cantidad, tipo de precio y total.
-- **Clientes**: alta de clientes y consulta de su historial de compras.
-- **Proveedores y pedidos**: registro de compras a proveedores, que alimentan el inventario y los lotes de costo.
-- **Economia**: resumen de ventas y ganancias del dia/mes, top de perfumes y clientes, perfumes menos vendidos.
-- **Sincronizacion con Google Sheets (opcional)**: cada operacion exporta automaticamente los datos a una hoja de calculo en segundo plano, sin bloquear la interfaz. Si no se configura, la app funciona igual solo con la base de datos local.
-- **Respaldos automaticos**: antes de cada operacion destructiva (eliminar perfume, cliente o venta) y al iniciar la app, se guarda una copia de la base de datos en `backups/`.
-- **Registro de errores**: los errores inesperados quedan guardados en `logs/app.log` para poder diagnosticarlos despues, en vez de perderse en silencio.
+---
 
-## Arquitectura
+# Funcionalidades
 
-El proyecto esta dividido por responsabilidad
+### Inicio de sesión y control de usuarios
 
-| Archivo | Responsabilidad |
-|---|---|
-| `main.py` | Punto de entrada, manejo de excepciones no controladas |
-| `app.py` | Ventana principal, menu lateral, pantalla de inicio |
-| `config.py` | Colores, fuentes y constantes de entorno |
-| `db.py` | Conexion SQLite, esquema de tablas y respaldos automaticos |
-| `auth.py` | Autenticacion de usuarios y control de roles (admin / vendedora) |
-| `login.py` | Pantalla de inicio de sesion y creacion de la primera cuenta admin |
-| `usuarios.py` | Gestion de usuarios (solo administradores) |
-| `recibos.py` | Generacion de recibos de venta en PDF |
-| `registro.py` | Configuracion de logging de errores a archivo |
-| `sheets.py` | Exportacion a Google Sheets (en hilo separado, opcional) |
-| `styles.py` | Estilos `ttk` (Treeview, Combobox) |
-| `widgets.py` | Componentes de UI reutilizables |
-| `inventario.py`, `clientes.py`, `ventas.py`, `economia.py`, `proveedores.py` | Una pantalla por archivo, con su propio estado |
-| `tests/` | Tests automatizados (costeo FIFO y autenticacion), corren en CI con GitHub Actions |
+El sistema cuenta con autenticación mediante usuario y contraseña, además de dos niveles de acceso:
 
-El costeo de inventario usa un metodo **FIFO** (first-in, first-out): cada compra a un proveedor crea un "lote" con su propio costo unitario, y cada venta consume primero los lotes mas antiguos para calcular la ganancia real, en lugar de usar un costo promedio.
+* **Administrador**, con acceso completo al sistema.
+* **Vendedora**, enfocada únicamente en las operaciones del día a día, sin permisos para modificar precios o eliminar información.
 
-## Problema tecnico que encontre y corregi
+Las contraseñas se almacenan utilizando **hash + salt**, evitando guardarlas en texto plano.
 
-El sistema original calculaba y **descontaba** el costo del inventario (de los lotes FIFO) en el momento en que el usuario agregaba un perfume a la lista temporal de una venta, antes de confirmar nada. Si el usuario abria la ventana de "Nueva venta", agregaba perfumes y cerraba la ventana sin guardar, el lote ya habia sido descontado en la base de datos aunque la venta nunca se registro. Esto desincronizaba el costo real de inventario sin que existiera ningun registro de venta que lo explicara.
+---
 
-La correccion separo el problema en dos pasos:
+### Inventario
 
-1. `calcular_costo_estimado()` — calcula el costo FIFO **sin modificar la base de datos**, usado solo para mostrar una previsualizacion mientras se arma la venta.
-2. `aplicar_descuento_lotes()` — descuenta de verdad las unidades de los lotes, y se ejecuta **unicamente** al confirmar la venta con "Guardar venta".
+Permite registrar, modificar y eliminar perfumes, además de realizar búsquedas rápidas por nombre para localizar productos fácilmente.
 
-Tambien se agrego `revertir_descuento_lotes()`, que devuelve las unidades a los lotes (en el mismo orden en que se consumieron) cuando se elimina una venta, para que el costeo FIFO se mantenga consistente incluso despues de una reversion.
+---
 
-Otros problemas corregidos:
+### Ventas
 
-- Validacion de existencias que no contaba lo que ya se habia agregado a la lista temporal de la misma venta (permitia vender mas stock del disponible si se agregaba el mismo perfume dos veces).
-- Falta de manejo de errores al convertir texto de formularios a numeros: un campo vacio o con texto causaba que la ventana se cerrara de golpe en vez de mostrar un mensaje de error claro.
+Cada venta registra:
 
-## Seguridad: usuarios y roles
+* método de pago;
+* tipo de precio (normal, mayoreo o personalizado);
+* cantidad vendida;
+* costo real del producto utilizando costeo FIFO.
 
-La primera vez que se abre la app, pide crear una cuenta de administrador. Las siguientes veces, pide usuario y contraseña. Las contraseñas se guardan con hash + salt (nunca en texto plano).
+Esto permite conocer con precisión la utilidad obtenida en cada venta.
 
-Hay dos roles:
+---
 
-- **admin**: acceso total, incluye crear/eliminar usuarios desde la pantalla "Usuarios".
-- **vendedora**: puede registrar ventas, clientes y compras, pero no puede eliminar registros ni editar precios de inventario o proveedores.
+### Clientes
 
-## Recibos en PDF
+El sistema permite registrar clientes y consultar su historial completo de compras, facilitando el seguimiento de clientes frecuentes.
 
-Desde la pantalla de Ventas, seleccionando una venta y presionando "Generar recibo PDF" se crea un PDF en la carpeta `recibos/` con el detalle de la venta (perfume, marca, cantidad, tipo de precio, total) y se abre automaticamente.
+---
 
-## Tests y CI
+### Proveedores
 
-Los tests automatizados (`tests/`) cubren la logica de costeo FIFO y la autenticacion de usuarios, usando una base de datos SQLite en memoria que no toca los datos reales. Corren automaticamente en cada `push` mediante GitHub Actions (`.github/workflows/tests.yml`).
+Las compras realizadas a proveedores generan automáticamente nuevos lotes de inventario con su costo correspondiente, información que posteriormente utiliza el sistema para calcular correctamente las ganancias.
 
-Para correrlos localmente:
+---
 
-```
+### Economía
+
+Incluye un módulo con indicadores importantes para el negocio, como:
+
+* ventas del día y del mes;
+* ganancias;
+* perfumes más vendidos;
+* perfumes con menor rotación;
+* clientes con mayor volumen de compras.
+
+---
+
+### Recibos en PDF
+
+Desde el módulo de ventas es posible generar un recibo en formato PDF con toda la información de la compra, incluyendo productos, marca, cantidad, tipo de precio y total.
+
+---
+
+### Sincronización con Google Sheets (opcional)
+
+De manera opcional, el sistema puede sincronizar automáticamente la información con una hoja de cálculo de Google Sheets.
+
+Esta sincronización se realiza en segundo plano para evitar que la interfaz se bloquee mientras se envían los datos. Si no se configura, la aplicación continúa funcionando normalmente utilizando únicamente la base de datos local.
+
+---
+
+### Respaldos automáticos
+
+Antes de realizar operaciones que eliminan información y cada vez que inicia la aplicación, se crea automáticamente una copia de seguridad de la base de datos dentro de la carpeta `backups/`.
+
+---
+
+### Registro de errores
+
+Los errores inesperados se almacenan en `logs/app.log`, facilitando el diagnóstico y la corrección de problemas sin perder información importante.
+
+---
+
+# Arquitectura del proyecto
+
+El proyecto está organizado por módulos, donde cada archivo tiene una responsabilidad específica.
+
+| Archivo                                                                      | Función                                                           |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `main.py`                                                                    | Punto de entrada y manejo de excepciones generales.               |
+| `app.py`                                                                     | Ventana principal y navegación de la aplicación.                  |
+| `config.py`                                                                  | Configuración de colores, fuentes y constantes.                   |
+| `db.py`                                                                      | Base de datos SQLite, creación de tablas y respaldos automáticos. |
+| `auth.py`                                                                    | Autenticación y control de permisos.                              |
+| `login.py`                                                                   | Inicio de sesión y creación del primer administrador.             |
+| `usuarios.py`                                                                | Administración de usuarios.                                       |
+| `recibos.py`                                                                 | Generación de recibos PDF.                                        |
+| `registro.py`                                                                | Configuración del sistema de logs.                                |
+| `sheets.py`                                                                  | Sincronización con Google Sheets.                                 |
+| `styles.py`                                                                  | Personalización de estilos `ttk`.                                 |
+| `widgets.py`                                                                 | Componentes reutilizables de la interfaz.                         |
+| `inventario.py`, `clientes.py`, `ventas.py`, `economia.py`, `proveedores.py` | Pantallas principales del sistema.                                |
+| `tests/`                                                                     | Pruebas automatizadas.                                            |
+
+---
+
+# Costeo FIFO
+
+El sistema utiliza el método **FIFO (First In, First Out)** para calcular el costo real de cada venta.
+
+Cada compra realizada a un proveedor genera un nuevo lote con su propio costo unitario. Cuando se vende un perfume, el sistema consume primero las unidades pertenecientes a los lotes más antiguos, permitiendo obtener una utilidad mucho más precisa que utilizando un costo promedio.
+
+---
+
+# Problema técnico resuelto
+
+Durante el desarrollo se detectó un problema importante en la lógica de ventas.
+
+Originalmente, el descuento del inventario se realizaba cuando el usuario agregaba un perfume a la lista temporal de una venta. Si posteriormente cancelaba la operación, el inventario ya había sido modificado aunque la venta nunca se registrara.
+
+Esto provocaba inconsistencias entre el inventario y las ventas almacenadas.
+
+La solución consistió en dividir el proceso en dos etapas:
+
+* `calcular_costo_estimado()`: calcula el costo utilizando FIFO únicamente para mostrar una vista previa, sin modificar la base de datos.
+* `aplicar_descuento_lotes()`: descuenta definitivamente las unidades únicamente cuando la venta es confirmada.
+
+Además, se implementó `revertir_descuento_lotes()`, encargado de restaurar las unidades consumidas cuando una venta es eliminada, manteniendo la consistencia del inventario.
+
+También se corrigieron otros problemas importantes, entre ellos:
+
+* evitar que una misma venta permitiera agregar más unidades de las disponibles cuando un producto se añadía varias veces;
+* mejorar la validación de formularios para impedir cierres inesperados causados por datos inválidos o campos vacíos.
+
+---
+
+# Pruebas automatizadas
+
+El proyecto incluye pruebas automatizadas para verificar:
+
+* la lógica del costeo FIFO;
+* la autenticación de usuarios.
+
+Las pruebas utilizan una base de datos SQLite en memoria para no afectar los datos reales y se ejecutan automáticamente mediante GitHub Actions en cada actualización del repositorio.
+
+Para ejecutarlas localmente:
+
+```bash
 pip install pytest
 python -m pytest tests/ -v
 ```
 
-## Stack
+---
 
-Python 3, Tkinter/ttk para la interfaz, SQLite como base de datos local, `gspread` + Google Service Account para la sincronizacion con Google Sheets, `fpdf2` para los recibos en PDF.
+# Tecnologías utilizadas
 
-## Como correrla
+* Python 3
+* Tkinter / ttk
+* SQLite
+* gspread
+* Google Service Account
+* fpdf2
 
-```
+---
+
+# Ejecución del proyecto
+
+```bash
 pip install -r requirements.txt
 python main.py
 ```
 
-Requiere `Image.png` en la misma carpeta (la imagen de la pantalla de inicio; si no esta, la app abre igual sin mostrarla). `credenciales.json` es opcional, solo se necesita para la sincronizacion con Google Sheets (ver siguiente seccion).
+La aplicación utiliza `Image.png` como imagen de bienvenida. Si el archivo no está presente, el sistema continúa funcionando sin inconvenientes.
 
-## Sincronizacion con Google Sheets (opcional)
+El archivo `credenciales.json` únicamente es necesario si se desea habilitar la sincronización con Google Sheets.
 
-La app puede sincronizar automaticamente los datos de Inventario, Ventas, Clientes, Proveedores y Economia a una hoja de calculo de Google. Esto es opcional: si no la configuras, la app funciona igual usando solo la base de datos local.
+---
 
-Para activarla:
+# Configuración de Google Sheets (opcional)
 
-1. Entra a [Google Cloud Console](https://console.cloud.google.com/) y crea un proyecto (o usa uno existente).
-2. Habilita las APIs de **Google Sheets** y **Google Drive** para ese proyecto.
-3. Crea una **cuenta de servicio** (Service Account) y descarga su archivo de credenciales en formato JSON.
-4. Renombra ese archivo a `credenciales.json` y colocalo en la misma carpeta que `main.py`.
-5. Crea una hoja de calculo de Google llamada `PERFUMES` (o el nombre que prefieras) con 5 pestañas llamadas exactamente: `Inventario`, `Ventas`, `Clientes`, `Proveedores`, `Economia`.
-6. Comparte esa hoja de calculo con el correo de la cuenta de servicio (aparece dentro del `credenciales.json`, campo `client_email`), dandole permiso de Editor.
-7. Si usaste un nombre distinto a `PERFUMES`, configuralo con la variable de entorno `PERFUMERIA_SHEET_NAME`.
+Para habilitar la sincronización:
 
-Si el archivo `credenciales.json` no existe o las credenciales no son validas, la app te avisara al iniciar y seguira funcionando sin sincronizar.
+1. Crear un proyecto en Google Cloud Console.
+2. Activar las APIs de Google Sheets y Google Drive.
+3. Crear una Service Account.
+4. Descargar el archivo JSON de credenciales.
+5. Renombrarlo como `credenciales.json`.
+6. Colocarlo junto a `main.py`.
+7. Compartir la hoja de cálculo con el correo de la cuenta de servicio otorgándole permisos de edición.
+
+Si las credenciales no existen o son incorrectas, la aplicación simplemente continuará funcionando utilizando la base de datos local.
