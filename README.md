@@ -4,6 +4,8 @@
 ![Licencia: MIT](https://img.shields.io/badge/licencia-MIT-blue.svg)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)
 
+🇪🇸 Español | [🇬🇧 English](README.en.md)
+
 Esta es una aplicación de escritorio diseñada a la medida para centralizar y simplificar el día a día de un negocio de venta de perfumes. Lejos de ser un proyecto puramente teórico, la aplicación opera actualmente en un entorno real, unificando el control de inventario, ventas, clientes, proveedores y finanzas en una sola plataforma rápida e intuitiva.
 
 https://github.com/user-attachments/assets/3dd34af4-55bd-467b-b520-242004f0a818
