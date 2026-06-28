@@ -136,9 +136,9 @@ Estas pruebas utilizan una base de datos SQLite en memoria (`:memory:`), aisland
 
 Para lanzar las pruebas en un entorno local:
 
-```bash
 pip install pytest
 python -m pytest tests/ -v
+
 Tecnologías Utilizadas
 Lenguaje: Python 3
 Interfaz Gráfica: Tkinter / ttk
@@ -146,6 +146,7 @@ Base de Datos: SQLite
 Integración Cloud: gspread y Google Service Account
 Reportería e Ingeniería Visual: fpdf2, matplotlib y Pillow
 Despliegue y Ejecución
+
 Para iniciar el proyecto en un entorno local, asegúrate de instalar las dependencias necesarias e inicializar el archivo principal:
 
 pip install -r requirements.txt
