@@ -6,8 +6,11 @@
 
 Esta es una aplicación de escritorio diseñada a la medida para centralizar y simplificar el día a día de un negocio de venta de perfumes. Lejos de ser un proyecto puramente teórico, la aplicación opera actualmente en un entorno real, unificando el control de inventario, ventas, clientes, proveedores y finanzas en una sola plataforma rápida e intuitiva.
 
+https://github.com/user-attachments/assets/3dd34af4-55bd-467b-b520-242004f0a818
+
 ## Contenido
 
+* [Capturas](#capturas)
 * [¿Por qué nació este proyecto?](#por-qué-nació-este-proyecto)
 * [Funcionalidades Clave](#funcionalidades-clave)
 * [Arquitectura del Proyecto](#arquitectura-del-proyecto)
@@ -21,6 +24,24 @@ Esta es una aplicación de escritorio diseñada a la medida para centralizar y s
 * [Preguntas Frecuentes](#preguntas-frecuentes)
 * [Créditos](#créditos)
 * [Licencia](#licencia)
+
+---
+
+## Capturas
+
+<table>
+<tr>
+<td><img src="assets/screenshots/login.png" alt="Inicio de sesion" width="400"/></td>
+<td><img src="assets/screenshots/inicio.png" alt="Panel de inicio" width="400"/></td>
+</tr>
+<tr>
+<td><img src="assets/screenshots/inventario.png" alt="Inventario" width="400"/></td>
+<td><img src="assets/screenshots/ventas.png" alt="Registro de ventas" width="400"/></td>
+</tr>
+<tr>
+<td colspan="2"><img src="assets/screenshots/economia.png" alt="Panel de economia con grafica" width="400"/></td>
+</tr>
+</table>
 
 ---
 
