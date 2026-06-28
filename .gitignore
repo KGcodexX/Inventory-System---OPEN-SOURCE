@@ -6,7 +6,9 @@ credenciales.json
 *.db
 backups/
 recibos/
+reportes/
 logs/
+preferencias.json
 
 .venv/
 venv/

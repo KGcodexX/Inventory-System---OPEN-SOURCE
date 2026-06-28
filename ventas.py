@@ -16,7 +16,7 @@ tabla_detalle = None
 entry_buscar_venta = None
 
 
-def cargar_ventas(filtro=""):
+def cargar_ventas(filtro="", fecha_desde="", fecha_hasta=""):
     global tabla_ventas
     if tabla_ventas is None or not tabla_ventas.winfo_exists():
         return
@@ -24,12 +24,30 @@ def cargar_ventas(filtro=""):
     for fila in tabla_ventas.get_children():
         tabla_ventas.delete(fila)
 
+    condiciones = []
+    parametros = []
+
     if filtro:
-        cursor.execute("""SELECT v.id,c.nombre,v.fecha FROM ventas v
-        JOIN clientes c ON v.cliente_id=c.id WHERE c.nombre LIKE ?""", (f"%{filtro}%",))
-    else:
-        cursor.execute("""SELECT v.id,c.nombre,v.fecha FROM ventas v
-        JOIN clientes c ON v.cliente_id=c.id""")
+        condiciones.append("c.nombre LIKE ?")
+        parametros.append(f"%{filtro}%")
+
+    if fecha_desde:
+        condiciones.append("DATE(v.fecha) >= DATE(?)")
+        parametros.append(fecha_desde)
+
+    if fecha_hasta:
+        condiciones.append("DATE(v.fecha) <= DATE(?)")
+        parametros.append(fecha_hasta)
+
+    consulta = "SELECT v.id,c.nombre,v.fecha FROM ventas v JOIN clientes c ON v.cliente_id=c.id"
+    if condiciones:
+        consulta += " WHERE " + " AND ".join(condiciones)
+
+    try:
+        cursor.execute(consulta, parametros)
+    except Exception:
+        messagebox.showerror("Error", "Fecha invalida, usa el formato AAAA-MM-DD")
+        return
 
     for row in cursor.fetchall():
         tabla_ventas.insert("", "end", values=row)
@@ -370,19 +388,32 @@ def mostrar_ventas(frame_contenido, configurar_grid_contenido):
     for w in frame_contenido.winfo_children():
         w.destroy()
 
-    configurar_grid_contenido(cols=3, filas_expand=(1,))
-    tk.Label(frame_contenido, text="Buscar cliente:").grid(row=0, column=0)
+    configurar_grid_contenido(cols=4, filas_expand=(2,))
+
+    tk.Label(frame_contenido, text="Buscar cliente:").grid(row=0, column=0, sticky="e")
     entry_buscar_venta = tk.Entry(frame_contenido)
     entry_buscar_venta.grid(row=0, column=1, sticky="ew")
-    boton(frame_contenido, "Buscar", lambda: cargar_ventas(entry_buscar_venta.get())).grid(
-        row=0, column=2, padx=BTN_PADX, pady=BTN_PADY, sticky="e")
+
+    tk.Label(frame_contenido, text="Desde (AAAA-MM-DD):").grid(row=1, column=0, sticky="e")
+    entry_fecha_desde = tk.Entry(frame_contenido)
+    entry_fecha_desde.grid(row=1, column=1, sticky="ew")
+
+    tk.Label(frame_contenido, text="Hasta (AAAA-MM-DD):").grid(row=1, column=2, sticky="e")
+    entry_fecha_hasta = tk.Entry(frame_contenido)
+    entry_fecha_hasta.grid(row=1, column=3, sticky="ew")
+
+    def buscar():
+        cargar_ventas(entry_buscar_venta.get(), entry_fecha_desde.get().strip(), entry_fecha_hasta.get().strip())
+
+    boton(frame_contenido, "Buscar", buscar).grid(
+        row=0, column=2, columnspan=2, padx=BTN_PADX, pady=BTN_PADY, sticky="e")
 
     columnas = ("ID", "Cliente", "Fecha")
     tabla_ventas = ttk.Treeview(frame_contenido, columns=columnas, show="headings")
     for col in columnas:
         tabla_ventas.heading(col, text=col)
         tabla_ventas.column(col, width=150)
-    tabla_ventas.grid(row=1, column=0, sticky="nsew")
+    tabla_ventas.grid(row=2, column=0, columnspan=2, sticky="nsew")
     tabla_ventas.bind("<<TreeviewSelect>>", mostrar_detalle)
 
     columnas2 = ("Perfume", "Cantidad", "Precio", "Total", "Metodo de pago")
@@ -390,13 +421,13 @@ def mostrar_ventas(frame_contenido, configurar_grid_contenido):
     for col in columnas2:
         tabla_detalle.heading(col, text=col)
         tabla_detalle.column(col, width=120)
-    tabla_detalle.grid(row=1, column=1, columnspan=2, sticky="nsew")
+    tabla_detalle.grid(row=2, column=2, columnspan=2, sticky="nsew")
 
     boton(frame_contenido, "Nueva venta", ventana_registrar_venta).grid(
-        row=2, column=0, padx=BTN_PADX, pady=BTN_PADY, sticky="e")
+        row=3, column=0, padx=BTN_PADX, pady=BTN_PADY, sticky="e")
     boton(frame_contenido, "Eliminar venta", eliminar_venta).grid(
-        row=2, column=1, padx=BTN_PADX, pady=BTN_PADY, sticky="w")
+        row=3, column=1, padx=BTN_PADX, pady=BTN_PADY, sticky="w")
     boton(frame_contenido, "Generar recibo PDF", generar_recibo, width=18).grid(
-        row=2, column=2, padx=BTN_PADX, pady=BTN_PADY, sticky="w")
+        row=3, column=2, columnspan=2, padx=BTN_PADX, pady=BTN_PADY, sticky="w")
 
     cargar_ventas()

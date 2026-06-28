@@ -12,6 +12,8 @@ CARD_BG = "#1a1a1a"
 TREE_BG = "#1a1a1a"
 TREE_ALT = "#222222"
 TREE_SEL = "#4a4a4a"
+ACCENT_COLOR = "#d4af37"
+ALERTA_COLOR = "#c0392b"
 
 FONT = ("Segoe UI", 10)
 FONT_BOLD = ("Segoe UI", 11, "bold")
@@ -30,3 +32,7 @@ GOOGLE_SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive",
 ]
+
+# ---------------- INVENTARIO Y PREDICCION ----------------
+UMBRAL_STOCK_BAJO = int(os.getenv("PERFUMERIA_UMBRAL_STOCK_BAJO", "5"))
+DIAS_VELOCIDAD_VENTA = 30

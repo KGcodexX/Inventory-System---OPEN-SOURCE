@@ -22,7 +22,7 @@ try:
 except Exception:
     SHEETS_HABILITADO = False
 
-# Evita exportaciones simultaneas (mas seguro y eficiente).
+# Evita exportaciones simultaneas
 EXPORT_LOCK = threading.Lock()
 EXPORT_RUNNING = threading.Event()
 

@@ -1,6 +1,7 @@
 """Widgets y helpers de UI reutilizables (botones, entradas, autocompletado, imagen de inicio)."""
-import math
 import tkinter as tk
+
+from PIL import Image, ImageTk
 
 from config import BG_COLOR, BTN_BG, BTN_FG, BTN_HOVER, BTN_WIDTH, CARD_BG, FONT, FONT_BOLD, TEXT_COLOR
 
@@ -19,7 +20,9 @@ def boton(parent, texto, comando, width=BTN_WIDTH):
         font=FONT_BOLD,
         width=width,
         bd=0,
-        relief="ridge"
+        relief="ridge",
+        pady=8,
+        cursor="hand2"
     )
     b.bind("<Enter>", lambda e: e.widget.config(bg=BTN_HOVER))
     b.bind("<Leave>", lambda e: e.widget.config(bg=BTN_BG))
@@ -56,10 +59,10 @@ def autocompletar(event, combobox, lista_original):
         combobox.event_generate("<Down>")
 
 
-def cargar_imagen_inicio(parent, max_w=820, max_h=580):
+def cargar_imagen_inicio(parent, max_w=600, max_h=400):
     global img_inicio
     try:
-        img = tk.PhotoImage(file="Image.png")
+        imagen_original = Image.open("Image.png")
     except Exception:
         img_inicio = None
         return None
@@ -68,12 +71,16 @@ def cargar_imagen_inicio(parent, max_w=820, max_h=580):
     available_w = parent.winfo_width()
     available_h = parent.winfo_height()
     if available_w > 1:
-        max_w = min(max_w, max(200, available_w - 40))
+        max_w = max(150, available_w - 40)
     if available_h > 1:
-        max_h = min(max_h, max(160, available_h // 2))
+        max_h = max(120, available_h - 20)
 
-    factor = max(1, math.ceil(max(img.width() / max_w, img.height() / max_h)))
-    if factor > 1:
-        img = img.subsample(factor, factor)
+    ancho, alto = imagen_original.size
+    factor = min(max_w / ancho, max_h / alto, 1)
+    nuevo_ancho = max(1, int(ancho * factor))
+    nuevo_alto = max(1, int(alto * factor))
+
+    imagen_redimensionada = imagen_original.resize((nuevo_ancho, nuevo_alto), Image.LANCZOS)
+    img = ImageTk.PhotoImage(imagen_redimensionada)
     img_inicio = img
     return img
